@@ -5,13 +5,14 @@
 #include "body.h"
 #include "vec3.h"
 #include "node.h"
+#include <stdlib.h>
 
 SDL_Window *window;
 SDL_GLContext context;
-node root (vec3(-10, -10, -10), vec3(10, 10, 10), 0, NULL);
+node root (vec3(-100, -100, -100), vec3(100, 100, 100), 0, NULL);
 
 bool running = true;
-int width = 640, height = 480;
+int width = 1280, height = 720;
 vector<body> bodies;
 
 void quit(int);
@@ -27,31 +28,39 @@ void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFa
 }
 
 int main() {
-	bodies.push_back(body(vec3(1, 0, -5), 10000));
-	bodies.push_back(body(vec3(1, 0, -10), 10000));
-	bodies.push_back(body(vec3(1, 0, -15), 10000));
-	bodies.push_back(body(vec3(1, 0, -20), 10000));
-	bodies.push_back(body(vec3(1, 0, -25), 10000));
-	root.partition();
+	for (int i = 0; i < 100; ++i) {
+		bodies.push_back(body(vec3((rand()%5000/100.0)-25, (rand()%5000/100.0)-25, (rand()%5000/100.0)-25), 10000));
+	}
+	root.insert(bodies.data(), bodies.size());
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) quit(1);
 	window = SDL_CreateWindow("Galaxy Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
 	if (window == NULL) quit(2);
 	SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 	context = SDL_GL_CreateContext(window);
+	
+	//Set alpha
+	glPointSize(3);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	perspectiveGL(75, width/(float)height, 1, 1000);
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(0, 0, -10);
-	glScalef(.3, .3, .3);
+	glScalef(.1, .1, .1);
+	glRotatef(25, 1, 0, 0);
 	
 	if (context == NULL) quit(3);
 	while (running) {
-		glRotatef(1, 0, 1, .1);
+		glRotatef(.1, 0, 1, .1);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glColor4f(1, 1, 1, .1);
 		root.draw();
+		glColor4f(1, 1, 1, 1);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < bodies.size(); ++i) {
 			bodies[i].draw();

@@ -1,6 +1,7 @@
 #include <vector>
 #include <SDL2/SDL_opengl.h>
 #include "node.h"
+#include <iostream>
 
 using namespace std;
 
@@ -22,11 +23,19 @@ bool node::insert1(body &b) {
 			}
 		} else {
 			bodies.push_back(&b);
+			if (bodies.size() > 4) {
+				this->partition();
+			}
 		}
 	} else return false;
 	return true;
 }
 
+void node::insert(body* bodylist, int count) { 
+	for (int i = 0; i < count; ++i) {
+		this->insert1(bodylist[i]);
+	}
+}
 void node::insert(body** bodylist, int count) { 
 	for (int i = 0; i < count; ++i) {
 		this->insert1(*bodylist[i]);
@@ -80,6 +89,7 @@ void node::draw() {
 }
 
 void node::partition() {
+	partitioned = true;
 	vec3 nl, nu;
 	children.push_back(new node(lower, center, depth + 1, this)); //Bottom, left back
 	nl = lower; nl.x = center.x;

@@ -18,6 +18,7 @@ class node {
 	
 public:
 	node(vec3, vec3, int, node*);
+	void insert(body*, int);
 	void insert(body**, int);
 	void partition();
 	void draw();
