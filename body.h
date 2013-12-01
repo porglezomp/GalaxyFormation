@@ -8,11 +8,11 @@ class body {
 	double mass;
 public:
 	vec3 pos;
+	body();
 	body(vec3, double);
 	body(vec3, vec3, double);
 	void draw();
+	friend body average(body, body);
 };
-
-body average(body, body);
 
 #endif

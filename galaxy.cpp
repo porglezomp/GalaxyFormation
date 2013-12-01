@@ -4,9 +4,11 @@
 #include <vector>
 #include "body.h"
 #include "vec3.h"
+#include "node.h"
 
 SDL_Window *window;
 SDL_GLContext context;
+node root (vec3(-10, -10, -10), vec3(10, 10, 10), 0, NULL);
 
 bool running = true;
 int width = 640, height = 480;
@@ -30,6 +32,7 @@ int main() {
 	bodies.push_back(body(vec3(1, 0, -15), 10000));
 	bodies.push_back(body(vec3(1, 0, -20), 10000));
 	bodies.push_back(body(vec3(1, 0, -25), 10000));
+	root.partition();
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) quit(1);
 	window = SDL_CreateWindow("Galaxy Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
@@ -41,10 +44,14 @@ int main() {
 	glLoadIdentity();
 	perspectiveGL(75, width/(float)height, 1, 1000);
 	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(0, 0, -10);
+	glScalef(.3, .3, .3);
 	
 	if (context == NULL) quit(3);
 	while (running) {
+		glRotatef(1, 0, 1, .1);
 		glClear(GL_COLOR_BUFFER_BIT);
+		root.draw();
 		glBegin(GL_POINTS);
 		for (int i = 0; i < bodies.size(); ++i) {
 			bodies[i].draw();

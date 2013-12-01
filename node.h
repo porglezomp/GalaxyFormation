@@ -1,6 +1,7 @@
 #ifndef GALX_NODE_INC
 #define GALX_NODE_INC
 
+#include <vector>
 #include "vec3.h"
 #include "body.h"
 
@@ -9,16 +10,17 @@ class node {
 	int depth;
 	body centerofmass;
 	vec3 lower, center, upper;
-	vector<node*> children;
-	vector<body*> bodies;
+	std::vector<node*> children;
+	std::vector<body*> bodies;
 	node *parent;
 	bool contains(vec3);
 	bool insert1(body&);
 	
 public:
 	node(vec3, vec3, int, node*);
-	void insert(body*, int);
+	void insert(body**, int);
 	void partition();
+	void draw();
 	body cofm();
 };
 
