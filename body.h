@@ -1,7 +1,7 @@
 #ifndef GALX_BODY_INC
 #define GALX_BODY_INC
 
-struct vec3;
+#include "vec3.h";
 
 class body {
 	vec3 pos, vel;
@@ -9,6 +9,7 @@ class body {
 public:
 	body(vec3, double);
 	body(vec3, vec3, double);
+	void draw();
 };
 
 #endif
