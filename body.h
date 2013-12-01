@@ -13,4 +13,6 @@ public:
 	void draw();
 };
 
+body average(body, body);
+
 #endif
