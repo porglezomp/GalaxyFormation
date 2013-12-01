@@ -1,4 +1,4 @@
-OBJS=galaxy.o vec3.o
+OBJS=galaxy.o vec3.o galaxy.o
 SDL=$(shell sdl2-config --static-libs --cflags)
 APP=Galaxy.exe
 
