@@ -65,6 +65,10 @@ double length(const vec3& v) {
 	return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
+double dist(const vec3 &a, const vec3 &b) {
+	return length(a - b);
+}
+
 //negation
 vec3 vec3::operator-() { return vec3(-x, -y, -z); }
 

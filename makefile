@@ -1,4 +1,4 @@
-OBJS=galaxy.o vec3.o body.o node.o
+OBJS=galaxy.o vec3.o body.o node.o constants.o
 SDL=$(shell sdl2-config --static-libs --cflags)
 APP=Galaxy.exe
 
@@ -7,3 +7,7 @@ $(APP) : $(OBJS)
 	
 %.o : %.cpp
 	g++ $< -c
+
+clean:
+	rm $(OBJS)
+	rm $(APP)

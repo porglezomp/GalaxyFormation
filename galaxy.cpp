@@ -7,9 +7,12 @@
 #include "node.h"
 #include <stdlib.h>
 
+float size = 1E6;
+float scale = 1E-5;
+
 SDL_Window *window;
 SDL_GLContext context;
-node root (vec3(-100, -100, -100), vec3(100, 100, 100), 0, NULL);
+node root (vec3(-size, -size, -size), vec3(size, size, size), 0, NULL);
 
 bool running = true;
 int width = 1280, height = 720;
@@ -27,9 +30,13 @@ void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFa
     glFrustum( -fW, fW, -fH, fH, zNear, zFar );
 }
 
+double randin(double range) {
+	return (rand()%(int)(range*20000)/10000.0)-range;
+}
+
 int main() {
 	for (int i = 0; i < 100; ++i) {
-		bodies.push_back(body(vec3((rand()%5000/100.0)-25, (rand()%5000/100.0)-25, (rand()%5000/100.0)-25), 10000));
+		bodies.push_back(body(vec3(randin(1E5), randin(1E5), randin(1E5)), 1E25));
 	}
 	root.insert(bodies.data(), bodies.size());
 	
@@ -41,7 +48,7 @@ int main() {
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 	context = SDL_GL_CreateContext(window);
 	
-	//Set alpha
+	//Set alpha blending
 	glPointSize(3);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -51,21 +58,32 @@ int main() {
 	perspectiveGL(75, width/(float)height, 1, 1000);
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(0, 0, -10);
-	glScalef(.1, .1, .1);
+	glScalef(scale, scale, scale);
 	glRotatef(25, 1, 0, 0);
 	
 	if (context == NULL) quit(3);
 	while (running) {
+		root.update();
+		for (int i = 0; i < bodies.size(); ++i) {
+			bodies[i].update(root);
+		}
+		for (int i = 0; i < bodies.size(); ++i) {
+			bodies[i].move();
+		}
+		
 		glRotatef(.1, 0, 1, .1);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glColor4f(1, 1, 1, .1);
+		
+		glColor4f(.2, .5, .2, .2);
 		root.draw();
+		
 		glColor4f(1, 1, 1, 1);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < bodies.size(); ++i) {
-			bodies[i].draw();
+			glVertex3d(bodies[i].pos.x, bodies[i].pos.y, bodies[i].pos.z);
 		}
 		glEnd();
+		
 		SDL_GL_SwapWindow(window);
 		events();
 	}

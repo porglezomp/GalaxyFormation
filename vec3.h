@@ -28,5 +28,6 @@ ostream& operator<<(ostream&, const vec3&);
 double dot(const vec3&, const vec3&);
 double length(const vec3&);
 vec3 normalize(const vec3&);
+double dist(const vec3&, const vec3&);
 
 #endif
